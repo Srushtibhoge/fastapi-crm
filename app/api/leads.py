@@ -132,3 +132,43 @@ async def get_leads():
             status_code=500,
             detail="Internal server error"
         )
+
+
+@router.delete("/{lead_id}")
+async def delete_lead(lead_id: str):
+
+    try:
+        if not ObjectId.is_valid(lead_id):
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid lead ID"
+            )
+
+        db = get_database()
+
+        result = await db["leads"].delete_one({
+            "_id": ObjectId(lead_id)
+        })
+
+        if result.deleted_count == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="Lead not found"
+            )
+
+        return {
+            "status": 200,
+            "success": True,
+            "message": "Lead deleted successfully"
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        print("Error deleting lead:", e)
+
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
