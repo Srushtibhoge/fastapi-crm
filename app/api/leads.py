@@ -126,8 +126,8 @@ async def get_leads():
             "leads": leads
         }
 
-    except Exception as e:
-        print("Error fetching leads:", e)
+    except Exception as error:
+        print("Error fetching leads:", error)
         raise HTTPException(
             status_code=500,
             detail="Internal server error"
